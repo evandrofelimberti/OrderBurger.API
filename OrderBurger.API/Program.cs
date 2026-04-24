@@ -1,41 +1,52 @@
+using OrderBurger.API.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services
+    .AddDatabase(builder.Configuration)
+    .AddRepositories()
+    .AddApplicationServices()
+    .AddAutoMapperProfiles()
+    .AddFluentValidators()
+    .AddSwaggerDocs();
+
+builder.Services
+    .AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.SuppressModelStateInvalidFilter = true;
+    });
+
+builder.Services
+    .AddHealthChecks()
+    .AddDbContextCheck<global::OrderBurger.API.Data.AppDbContext>("database");
+
+builder.Logging
+    .ClearProviders()
+    .AddConsole()
+    .AddDebug();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// app.UseExceptionHandling(); // Sempre primeiro
+
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Product API v1");
+        options.RoutePrefix = string.Empty; // Swagger na raiz
+    });
+
+    await app.ApplyMigrationsAsync();
 }
 
 app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-    {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast");
+app.MapControllers();
+app.MapHealthChecks("/health");
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+public partial class Program { }

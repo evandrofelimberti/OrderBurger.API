@@ -1,3 +1,4 @@
+using OrderBurger.API.DTOs;
 using OrderBurger.API.Enums;
 
 namespace OrderBurger.API.Models;
@@ -10,4 +11,13 @@ public class Product
     public string Description { get; set; } = string.Empty;    
     public decimal Price { get; set; }
     public CategoryEnum Category { get; set; }   
+    
+    public void UpdateFromRequest(ProductRequestDTO dto)
+    {
+        Category = dto.Category;
+        Code = dto.Code;
+        Description = dto.Description;
+        Name = dto.Name;
+        Price = dto.Price;
+    }
 }
