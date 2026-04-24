@@ -1,5 +1,4 @@
 using OrderBurger.API.Extensions;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,15 +28,13 @@ builder.Logging
 
 var app = builder.Build();
 
-// app.UseExceptionHandling(); // Sempre primeiro
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "Product API v1");
-        options.RoutePrefix = string.Empty; // Swagger na raiz
+        options.RoutePrefix = string.Empty;
     });
 
     await app.ApplyMigrationsAsync();
