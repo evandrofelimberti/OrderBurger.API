@@ -24,7 +24,7 @@ public sealed class ProductController: ControllerBase
         return Ok(await _service.GetAllAsync(cancellationToken));
     }
     
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:guid}", Name = "GetProductById")]
     [ProducesResponseType(typeof(ProductResponseDTO),StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken cancellationToken)
@@ -39,8 +39,7 @@ public sealed class ProductController: ControllerBase
     public async Task<IActionResult> AddAsync([FromBody] ProductRequestDTO dto, CancellationToken cancellationToken)
     {
         var product = await _service.AddAsync(dto, cancellationToken);
-        return CreatedAtAction(nameof(GetByIdAsync), new {id = product.Id}, product);
-        //return CreatedAtRoute("GetByIdAsync", new { id = product.Id }, product);
+        return CreatedAtRoute("GetProductById", new { id = product.Id }, product);
     }
     
     [HttpPut("{id:guid}")]

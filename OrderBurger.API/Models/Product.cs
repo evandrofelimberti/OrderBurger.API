@@ -12,6 +12,19 @@ public class Product
     public decimal Price { get; set; }
     public CategoryEnum Category { get; set; }   
     
+    public Product(){}
+    
+    public Product(string code, string name, string description, decimal price, CategoryEnum category)
+    {
+        Id = Guid.NewGuid();
+        Code = code;
+        Name = name;
+        Description = description;
+        Price = price;
+        Category = category;
+    }   
+        
+    
     public void UpdateFromRequest(ProductRequestDTO dto)
     {
         Category = dto.Category;

@@ -8,8 +8,9 @@ public class ProductProfile: Profile
 {
     public ProductProfile()
     {
-        CreateMap<ProductRequestDTO, Product>();        
         CreateMap<Product, ProductResponseDTO>();
+        CreateMap<ProductRequestDTO, Product>()
+            .ConstructUsing(dto => new Product(dto.Code, dto.Name, dto.Description, dto.Price, dto.Category));
     }   
     
 }
