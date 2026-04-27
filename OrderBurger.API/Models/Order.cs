@@ -23,9 +23,24 @@ public class Order
         ConsumerName = consumerName;
     }
     
-    public void AddItem(Product product, decimal quantity)
+    public OrderItem AddItem(Product product, decimal quantity)
     {
-        _items.Add( new OrderItem(Id, quantity, product));
+        var item = new OrderItem(Id, quantity, product);
+        _items.Add(item);
+        
+        return item;
+    }
+    
+    public void RemoveItem(Guid ProductId)
+    {
+        if (Status == OrderStatus.Closed)
+            throw new Exception("Pedido finalizado, não é possivel adicionar remover itens");
+        
+        var item = _items.FirstOrDefault(x => x.ProductId == ProductId);
+        if (item == null)
+            throw new Exception("Produto não encontrado no pedido");
+            
+        _items.Remove(item);
     }
        
 }

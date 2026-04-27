@@ -12,12 +12,15 @@ public class OrderItem
     public decimal UnitPrice { get; set; }
     public decimal Total => Quantity * UnitPrice;
     
+    public Product? Product { get; private set; }
+    
     public OrderItem(){}
     public OrderItem(Guid orderId, decimal quantity, Product product)
     {
         Id = Guid.NewGuid();
         OrderId = orderId;
         ProductId = product.Id;
+        Product = product;
         Category = product.Category;
         Quantity = quantity;
         UnitPrice = product.Price;

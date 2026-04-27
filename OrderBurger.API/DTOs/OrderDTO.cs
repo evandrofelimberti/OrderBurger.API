@@ -1,3 +1,6 @@
+using OrderBurger.API.Enums;
+using OrderBurger.API.Models;
+
 namespace OrderBurger.API.DTOs;
 
 public sealed record OrderRequestDTO(
@@ -11,5 +14,6 @@ public sealed record OrderResponseDTO(
     decimal SubTotal,
     decimal Discount,
     decimal Total,
+    OrderStatus Status,
     IEnumerable<OrderItemResponseDTO> Items
 );

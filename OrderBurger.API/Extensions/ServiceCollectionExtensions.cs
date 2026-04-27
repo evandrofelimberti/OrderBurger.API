@@ -37,18 +37,21 @@ public static IServiceCollection AddDatabase(
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
         return services;
     }
 
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<IOrderService, OrderService>();
         return services;
     }
 
     public static IServiceCollection AddAutoMapperProfiles(this IServiceCollection services)
     {
         services.AddAutoMapper(typeof(ProductProfile).Assembly);
+        services.AddAutoMapper(typeof(OrderProfile).Assembly);
         return services;
     }
 
@@ -56,6 +59,7 @@ public static IServiceCollection AddDatabase(
     {
         services.AddFluentValidationAutoValidation();
         services.AddValidatorsFromAssemblyContaining<ProductValidator>();
+        services.AddValidatorsFromAssemblyContaining<OrderValidator>();
         return services;
     }
 
