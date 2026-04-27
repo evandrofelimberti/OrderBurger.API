@@ -5,6 +5,7 @@ using OrderBurger.API.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using OrderBurger.API.Business.OrderDiscount;
 using OrderBurger.API.Validators;
 
 namespace OrderBurger.API.Extensions;
@@ -40,6 +41,13 @@ public static IServiceCollection AddDatabase(
         services.AddScoped<IOrderRepository, OrderRepository>();
         return services;
     }
+
+    public static IServiceCollection AddBusinessServices(this IServiceCollection services)
+    {
+        services.AddScoped<IOrderDiscountStrategy,ComboOrderDiscountStrategy>();
+        return services;
+    }
+    
 
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {

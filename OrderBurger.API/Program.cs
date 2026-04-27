@@ -8,6 +8,7 @@ builder.Services
     .AddApplicationServices()
     .AddAutoMapperProfiles()
     .AddFluentValidators()
+    .AddBusinessServices()
     .AddSwaggerDocs();
 
 builder.Services

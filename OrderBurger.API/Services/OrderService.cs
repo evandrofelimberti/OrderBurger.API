@@ -1,4 +1,5 @@
 using AutoMapper;
+using OrderBurger.API.Business.OrderDiscount;
 using OrderBurger.API.DTOs;
 using OrderBurger.API.Enums;
 using OrderBurger.API.Exceptions;
@@ -13,13 +14,19 @@ public sealed class OrderService: IOrderService
     private readonly IProductRepository _productRepository;
     private readonly IMapper _mapper;
     private readonly ILogger<OrderService> _logger;
+    private readonly IOrderDiscountStrategy _orderDiscountStrategy;
     
-    public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, IMapper mapper, ILogger<OrderService> logger)
+    public OrderService(IOrderRepository orderRepository, 
+        IProductRepository productRepository, 
+        IMapper mapper, 
+        ILogger<OrderService> logger, 
+        IOrderDiscountStrategy orderDiscountStrategy)
     {
         _orderRepository = orderRepository;
         _productRepository = productRepository;
         _mapper = mapper;
         _logger = logger;
+        _orderDiscountStrategy = orderDiscountStrategy;
     }
     
     public async Task<IEnumerable<OrderResponseDTO>> GetAllAsync(CancellationToken cancellationToken = default)
@@ -51,6 +58,8 @@ public sealed class OrderService: IOrderService
            var product = products[item.ProductId];
            var newitem = order.AddItem(product, item.Quantity);
        }
+       
+       ApplyDiscount(order);
        await _orderRepository.AddAsync(order, cancellationToken);
        await _orderRepository.SaveChangesAsync(cancellationToken);
        
@@ -71,6 +80,8 @@ public sealed class OrderService: IOrderService
         var newItem = order.AddItem(product, item.Quantity);
         
         await _orderRepository.AddNewItemAsync(newItem, cancellationToken);
+        
+        ApplyDiscount(order);
         await _orderRepository.SaveChangesAsync(cancellationToken);
         _logger.LogInformation("Item adicionado ao pedido: {OrderId} | Produto: {ProductName} | Quantidade: {Quantity}",
             order.Id, product?.Name, item.Quantity);
@@ -87,6 +98,8 @@ public sealed class OrderService: IOrderService
        order.RemoveItem(productId);
        
        _orderRepository.RemoveItem(itemRemove);
+       
+       ApplyDiscount(order);    
        _orderRepository.Update(order);
        await _orderRepository.SaveChangesAsync(cancellationToken);
        
@@ -125,5 +138,11 @@ public sealed class OrderService: IOrderService
             throw new KeyNotFoundException("Pedido não encontrado");
 
         return order;
-    }    
+    }
+
+    private void ApplyDiscount(Order order)
+    {
+        var calculateDiscount = _orderDiscountStrategy.CalculateDiscount(order);
+        order.ApplyDiscount(calculateDiscount);
+    }
 }

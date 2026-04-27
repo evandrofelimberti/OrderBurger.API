@@ -11,7 +11,7 @@ public class Order
     private readonly List<OrderItem> _items = new();
     public IReadOnlyList<OrderItem> Items => _items.AsReadOnly();
     public decimal SubTotal => _items.Sum(x => x.Total);
-    public decimal Discount { get; set; } = decimal.Zero;
+    public decimal Discount { get; private set; } = decimal.Zero;
     public decimal Total => SubTotal - Discount;
     
     public Order(){}
@@ -41,6 +41,11 @@ public class Order
             throw new Exception("Produto não encontrado no pedido");
             
         _items.Remove(item);
+    }
+
+    public void ApplyDiscount(decimal discount)
+    {
+        Discount = discount;
     }
        
 }
