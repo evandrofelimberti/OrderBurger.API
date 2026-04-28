@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using OrderBurger.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +16,25 @@ builder.Services
     .AddControllers()
     .ConfigureApiBehaviorOptions(options =>
     {
-        options.SuppressModelStateInvalidFilter = true;
+        options.SuppressModelStateInvalidFilter = false;
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var problemDetails = new ValidationProblemDetails(context.ModelState)
+            {
+                Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1",
+                Title = "Falha de validação na requisição.",
+                Status = StatusCodes.Status400BadRequest,
+                Detail = "Um ou mais campos estão inválidos. Corrija e tente novamente.",
+                Instance = context.HttpContext.Request.Path
+            };
+
+            problemDetails.Extensions["traceId"] = context.HttpContext.TraceIdentifier;
+
+            return new BadRequestObjectResult(problemDetails)
+            {
+                ContentTypes = { "application/problem+json" }
+            };
+        };
     });
 
 builder.Services
