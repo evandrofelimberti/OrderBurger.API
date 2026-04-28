@@ -10,7 +10,6 @@ public class OrderItemValidator: AbstractValidator<OrderItemRequestDTO>
     {
         RuleFor(x => x.ProductId).NotEmpty().WithMessage("Pedido deve conter pelo menos um produto");
         RuleFor(x => x.Quantity).GreaterThan(0).WithMessage("Quantidade do produto deve ser maior que zero");
-
     }
     
 }

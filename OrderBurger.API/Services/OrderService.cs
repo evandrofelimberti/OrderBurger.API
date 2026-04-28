@@ -73,6 +73,10 @@ public sealed class OrderService: IOrderService
     public async Task<OrderResponseDTO> AddItemAsync(Guid orderId, OrderItemRequestDTO item, CancellationToken cancellationToken = default)
     {
         var order = await GetOrderOrThrowAsync(orderId, cancellationToken);
+        
+         if (HasProductDuplicated(order, item.ProductId)) 
+             throw new OrderProductDuplicate();        
+        
         var product = await _productRepository.GetByIdAsync(item.ProductId, cancellationToken);
         if (product == null)
             throw new ProductNotFoundException(item.ProductId);
@@ -144,5 +148,11 @@ public sealed class OrderService: IOrderService
     {
         var calculateDiscount = _orderDiscountStrategy.CalculateDiscount(order);
         order.ApplyDiscount(calculateDiscount);
+    }
+    
+    private bool HasProductDuplicated(Order order, Guid productId)
+    {
+        return order.Items.Any(p => p.ProductId == productId);
+        
     }
 }

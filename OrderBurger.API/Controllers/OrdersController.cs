@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using OrderBurger.API.DTOs;
 using OrderBurger.API.Services;
@@ -36,8 +37,12 @@ public sealed class OrdersController: ControllerBase
     [ProducesResponseType(typeof(OrderResponseDTO),StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-    public async Task<IActionResult> AddAsync([FromBody] OrderRequestDTO dto, CancellationToken cancellationToken)
+    public async Task<IActionResult> AddAsync([FromBody] OrderRequestDTO dto, CancellationToken cancellationToken, [FromServices] IValidator<OrderRequestDTO> validator)
     {
+        var result = await validator.ValidateAsync(dto, cancellationToken);
+        if (!result.IsValid) 
+            return BadRequest(result.Errors);
+        
         var order = await _service.AddAsync(dto, cancellationToken);
         return CreatedAtRoute("GetOrderById", new { id = order.Id }, order);
     }

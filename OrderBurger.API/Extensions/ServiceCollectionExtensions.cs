@@ -68,6 +68,7 @@ public static IServiceCollection AddDatabase(
         services.AddFluentValidationAutoValidation();
         services.AddValidatorsFromAssemblyContaining<ProductValidator>();
         services.AddValidatorsFromAssemblyContaining<OrderValidator>();
+        services.AddValidatorsFromAssemblyContaining<OrderItemValidator>();
         return services;
     }
 
