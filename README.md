@@ -17,18 +17,36 @@ API RESTful para gerenciamento de **cardápio (produtos)** e **pedidos**, desenv
 
 ### Pré-requisitos
 - SDK .NET 9 instalado
+- Ferramenta EF Core instalada (caso não tenha):
+  ```bash
+  dotnet tool install --global dotnet-ef
+  ```
 
 ### Passos
 1. Restaurar dependências
    ```bash
    dotnet restore
    ```
-2. Executar o projeto
+
+2. Criar uma migration (somente na primeira vez ou quando houver mudança de modelo)
+   ```bash
+   dotnet ef migrations add InitialCreate --project OrderBurger.API --startup-project OrderBurger.API
+   ```
+
+3. Aplicar as migrations no banco
+   ```bash
+   dotnet ef database update --project OrderBurger.API --startup-project OrderBurger.API
+   ```
+
+4. Executar o projeto
    ```bash
    dotnet run --project OrderBurger.API
    ```
-3. Acessar Swagger:
-   - `https://localhost:{porta}/` (em ambiente de desenvolvimento)
+
+5. Acessar Swagger:
+    - `https://localhost:{porta}/` (em ambiente de desenvolvimento)
+
+> Em ambiente de desenvolvimento, a aplicação também aplica migrations automaticamente na inicialização.
 
 ---
 
