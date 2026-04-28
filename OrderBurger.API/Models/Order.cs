@@ -33,9 +33,6 @@ public class Order
     
     public void RemoveItem(Guid ProductId)
     {
-        if (Status == OrderStatus.Closed)
-            throw new Exception("Pedido finalizado, não é possivel adicionar remover itens");
-        
         var item = _items.FirstOrDefault(x => x.ProductId == ProductId);
         if (item == null)
             throw new Exception("Produto não encontrado no pedido");

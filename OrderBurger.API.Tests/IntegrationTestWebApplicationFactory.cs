@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 
-namespace OrderBurger.API.Tests.Integration;
+namespace OrderBurger.API.Tests;
 
-public sealed class IntegrationTestWebApplicationFactory : WebApplicationFactory<Program>, IDisposable
+public sealed class IntegrationTestWebApplicationFactory : WebApplicationFactory<Program>
 {
     private readonly string _dbPath = Path.Combine(Path.GetTempPath(), $"orderburger-it-{Guid.NewGuid():N}.db");
 

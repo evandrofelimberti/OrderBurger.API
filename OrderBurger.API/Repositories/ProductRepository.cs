@@ -50,4 +50,12 @@ public sealed class ProductRepository : IProductRepository
             .Where(p => idList.Contains(p.Id))
             .ToListAsync(cancellationToken);
     }
+
+    public IEnumerable<Product> GetByIds(IEnumerable<Guid> ids)
+    {
+        var idList = ids.Distinct().ToList();
+        return _context.Products
+            .Where(p => idList.Contains(p.Id))
+            .ToList();
+    }     
 }

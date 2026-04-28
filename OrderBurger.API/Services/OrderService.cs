@@ -73,13 +73,13 @@ public sealed class OrderService: IOrderService
     public async Task<OrderResponseDTO> AddItemAsync(Guid orderId, OrderItemRequestDTO item, CancellationToken cancellationToken = default)
     {
         var order = await GetOrderOrThrowAsync(orderId, cancellationToken);
-        
-         if (HasProductDuplicated(order, item.ProductId)) 
-             throw new OrderProductDuplicate();        
-        
+
         var product = await _productRepository.GetByIdAsync(item.ProductId, cancellationToken);
         if (product == null)
-            throw new ProductNotFoundException(item.ProductId);
+            throw new ProductNotFoundException(item.ProductId);        
+        
+         if (HasCategoryDuplicated(order, product.Category)) 
+             throw new OrderCategoryDuplicated();        
         
         var newItem = order.AddItem(product, item.Quantity);
         
@@ -150,9 +150,9 @@ public sealed class OrderService: IOrderService
         order.ApplyDiscount(calculateDiscount);
     }
     
-    private bool HasProductDuplicated(Order order, Guid productId)
+    private bool HasCategoryDuplicated(Order order, CategoryEnum category)
     {
-        return order.Items.Any(p => p.ProductId == productId);
+        return order.Items.Any(p => p.Category == category);
         
     }
 }

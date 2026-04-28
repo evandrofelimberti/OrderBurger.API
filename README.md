@@ -10,6 +10,19 @@ API RESTful para gerenciamento de **cardápio (produtos)** e **pedidos**, desenv
 - AutoMapper
 - FluentValidation
 - Swagger/OpenAPI
+- xUnit
+
+---
+
+## Arquitetura (visão rápida)
+
+Estrutura organizada por camadas:
+- `Controllers` (entrada HTTP)
+- `Services` (regras de negócio)
+- `Repositories` (acesso a dados)
+- `Models` (entidades)
+- `DTOs` e `Mappings` (contratos e mapeamentos)
+- `Validators` (validação de entrada)
 
 ---
 
@@ -23,30 +36,34 @@ API RESTful para gerenciamento de **cardápio (produtos)** e **pedidos**, desenv
   ```
 
 ### Passos
-1. Restaurar dependências
+1. Restaurar dependências:
    ```bash
    dotnet restore
    ```
 
-2. Criar uma migration (somente na primeira vez ou quando houver mudança de modelo)
+2. Aplicar as migrations no banco:
    ```bash
-   dotnet ef migrations add InitialCreate --project OrderBurger.API --startup-project OrderBurger.API
-   ```
+   dotnet ef migrations add CreatDatabase 
 
-3. Aplicar as migrations no banco
-   ```bash
    dotnet ef database update --project OrderBurger.API --startup-project OrderBurger.API
    ```
 
-4. Executar o projeto
+3. Executar a API:
    ```bash
    dotnet run --project OrderBurger.API
    ```
 
-5. Acessar Swagger:
-    - `https://localhost:{porta}/` (em ambiente de desenvolvimento)
+4. Acessar o Swagger (ambiente Development):
+    - `https://localhost:{porta}/`
 
-> Em ambiente de desenvolvimento, a aplicação também aplica migrations automaticamente na inicialização.
+> Em ambiente de desenvolvimento, a aplicação aplica migrations automaticamente na inicialização.
+
+---
+
+## Executar testes
+
+### Testes unitários + integração
+bash dotnet test
 
 ---
 
@@ -57,91 +74,107 @@ Base: `api/v1`
 ## Produtos (Cardápio)
 
 ### 1) Listar cardápio
-**GET** `/api/v1/Product`
-
-Retorna todos os produtos cadastrados.
+**GET** `/api/v1/product`
 
 ### 2) Consultar produto por ID
-**GET** `/api/v1/Product/{id}`
-
-Retorna os detalhes de um produto específico.
+**GET** `/api/v1/product/{id}`
 
 ### 3) Cadastrar produto
-**POST** `/api/v1/Product`
+**POST** `/api/v1/product`
 
 Exemplo de body:
-json { "code": "X-BURGER-01", "description": "Hambúrguer clássico", "name": "X-Burger", "price": 24.9, "category": 1 }
-
+json:
+```bash
+ {
+    "code": "X-BURGER-01",
+    "description": "Hambúrguer clássico",
+    "name": "X-Burger",
+    "price": 24.90,
+    "category": 1
+}
+```
 
 ### 4) Atualizar produto
-**PUT** `/api/v1/Product/{id}`
-
-Atualiza os dados de um produto existente.
+**PUT** `/api/v1/product/{id}`
 
 ### 5) Remover produto
-**DELETE** `/api/v1/Product/{id}`
-
-Remove um produto do cardápio.
+**DELETE** `/api/v1/product/{id}`
 
 ---
 
 ## Pedidos
 
 ### 1) Criar pedido
-**POST** `/api/v1/Orders`
+**POST** `/api/v1/orders`
 
-Exemplo de body:
-json { "consumerName": "João", "items": [{ "productId": "GUID_DO_PRODUTO", "quantity": 1 }]}
+Exemplo de body (json):
+```bash
+{
+    "customerName": "João",
+    "items":
+}
+```
 
 
 ### 2) Listar pedidos
-**GET** `/api/v1/Orders`
-
-Retorna todos os pedidos.
+**GET** `/api/v1/orders`
 
 ### 3) Consultar pedido por ID
-**GET** `/api/v1/Orders/{id}`
-
-Retorna os detalhes de um pedido específico.
+**GET** `/api/v1/orders/{id}`
 
 ### 4) Adicionar item ao pedido
-**POST** `/api/v1/Orders/{orderId}/items`
+**POST** `/api/v1/orders/{orderId}/items`
 
-Exemplo de body:
-json { "productId": "GUID_DO_PRODUTO", "quantity": 1 }
+Exemplo de body (json):
+```bash
+{
+    "productId": "GUID_DO_PRODUTO",
+    "quantity": 1
+}
+```
 
 
 ### 5) Remover item do pedido
-**DELETE** `/api/v1/Orders/{orderId}/items/{productId}`
-
-Remove um item do pedido pelo `productId`.
+**DELETE** `/api/v1/orders/{orderId}/items/{productId}`
 
 ---
 
-## Validações e tratamento de erro
+## Regras de validação e negócio
 
-A API utiliza **FluentValidation** para validar os DTOs de entrada.
+A API utiliza **FluentValidation** para validar DTOs de entrada e **Services** para validar regras de negócio.
 
-## Exemplos de validação:
-- Produto:
-   - Código obrigatório
-   - Nome obrigatório
-   - Descrição obrigatória
-   - Preço deve ser maior que zero
-- Pedido:
-   - Deve conter ao menos 1 item
-   - **Não permite produtos duplicados** no mesmo pedido
-- Item do pedido:
-   - `ProductId` obrigatório
-   - `Quantity` maior que zero
+### Produto
+- Código obrigatório
+- Nome obrigatório
+- Descrição obrigatória
+- Preço deve ser maior que zero
 
-### Exemplo de erro: produtos duplicados
-Se o mesmo `productId` for enviado mais de uma vez em `items` no `POST /Orders`, a API retorna erro de validação com mensagem:
+### Pedido (entrada)
+- Deve conter ao menos 1 item
+- Não permite `productId` duplicado na lista de itens
 
-`"O pedido contém produtos duplicados"`
+### Pedido (negócio)
+- Produto deve existir
+- Não permite **categoria duplicada** no mesmo pedido:
+    - ao criar pedido com lista de itens
+    - ao adicionar novo item em pedido existente
+
+### Item do pedido
+- `ProductId` obrigatório
+- `Quantity` deve ser igual a `1`
+
+---
+
+## Erros esperados (exemplos)
+
+- Produto não encontrado no cardápio
+- Produto duplicado por ID na requisição de criação
+- Categoria duplicada no pedido
+
+> Consulte o Swagger para ver os contratos e os códigos de resposta retornados por cada endpoint.
 
 ---
 
 ## Observações
-- Use o Swagger para testar os endpoints e visualizar contratos.
-- Para criar pedido, os produtos referenciados precisam existir no cardápio.
+- Para criar/editar pedidos, os produtos referenciados precisam existir no cardápio.
+- O projeto possui testes de integração para os controllers principais (`Product` e `Orders`) validando status code e contrato JSON.
