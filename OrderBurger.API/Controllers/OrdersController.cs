@@ -39,10 +39,6 @@ public sealed class OrdersController: ControllerBase
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> AddAsync([FromBody] OrderRequestDTO dto, CancellationToken cancellationToken)
     {
-        // var result = await validator.ValidateAsync(dto, cancellationToken);
-        // if (!result.IsValid) 
-        //     return BadRequest(result.Errors);
-        
         var order = await _service.AddAsync(dto, cancellationToken);
         return CreatedAtRoute("GetOrderById", new { id = order.Id }, order);
     }
