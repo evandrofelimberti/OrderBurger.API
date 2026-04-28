@@ -30,7 +30,7 @@ public sealed class OrderProfile: Profile
         CreateMap<Order, OrderResponseDTO>()
             .ConstructUsing((src, ctx) => new OrderResponseDTO(
                 src.Id,
-                src.ConsumerName,
+                src.CustomerName,
                 src.SubTotal,
                 src.Discount,
                 src.Total,

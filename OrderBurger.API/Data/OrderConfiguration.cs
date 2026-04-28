@@ -12,7 +12,7 @@ public sealed class OrderConfiguration
       builder.HasKey(x => x.Id);
       builder.Property(x => x.Id).ValueGeneratedOnAdd();
       builder.Property(x => x.DateCreated).IsRequired();
-      builder.Property(x => x.ConsumerName).IsRequired();
+      builder.Property(x => x.CustomerName).IsRequired();
       builder.Property(x => x.Status).IsRequired();
       
       builder.Navigation(o => o.Items)
@@ -26,7 +26,7 @@ public sealed class OrderConfiguration
          .OnDelete(DeleteBehavior.Cascade);      
       
       builder.HasIndex(x => x.Id).IsUnique();
-      builder.HasIndex(x => x.ConsumerName);
+      builder.HasIndex(x => x.CustomerName);
       builder.HasIndex(x => x.Status);
       
       builder.Ignore(x => x.SubTotal);

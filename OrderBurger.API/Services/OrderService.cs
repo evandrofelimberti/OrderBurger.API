@@ -52,7 +52,7 @@ public sealed class OrderService: IOrderService
        if (productNotFound.Count != 0)
            throw new ProductNotFoundException(productNotFound.First());
 
-       var order = new Order(orderDto.ConsumerName);
+       var order = new Order(orderDto.CustomerName);
        foreach (var item in orderDto.Items)
        {
            var product = products[item.ProductId];
@@ -65,7 +65,7 @@ public sealed class OrderService: IOrderService
        
        _logger.LogInformation(
            "Pedido criado: {OrderId} | Cliente: {Customer} | Itens: {Count} | Total: {Total:C}",
-           order.Id, order.ConsumerName, order.Items.Count, order.Total);
+           order.Id, order.CustomerName, order.Items.Count, order.Total);
        
        return _mapper.Map<OrderResponseDTO>(order);
     }

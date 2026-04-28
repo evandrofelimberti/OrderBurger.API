@@ -12,6 +12,9 @@ builder.Services
     .AddBusinessServices()
     .AddSwaggerDocs();
 
+builder.Services.AddRouting(options =>
+    options.LowercaseUrls = true);
+
 builder.Services
     .AddControllers()
     .ConfigureApiBehaviorOptions(options =>

@@ -6,7 +6,7 @@ public class Order
 {
     public Guid Id { get; set; }
     public DateTime DateCreated { get; set; }
-    public string ConsumerName { get; set; } = string.Empty;
+    public string CustomerName { get; set; } = string.Empty;
     public OrderStatus Status { get; set; } = OrderStatus.None;
     private readonly List<OrderItem> _items = new();
     public IReadOnlyList<OrderItem> Items => _items.AsReadOnly();
@@ -16,11 +16,11 @@ public class Order
     
     public Order(){}
     
-    public Order(string consumerName)
+    public Order(string customerName)
     {
         Id = Guid.NewGuid();
-        DateCreated = DateTime.Now;
-        ConsumerName = consumerName;
+        DateCreated = DateTime.UtcNow;
+        CustomerName = customerName;
     }
     
     public OrderItem AddItem(Product product, decimal quantity)

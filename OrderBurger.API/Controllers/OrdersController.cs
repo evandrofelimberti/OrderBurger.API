@@ -27,6 +27,7 @@ public sealed class OrdersController: ControllerBase
     [HttpGet("{id:guid}", Name = "GetOrderById")]
     [ProducesResponseType(typeof(OrderResponseDTO),StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return Ok(await _service.GetByIdAsync(id, cancellationToken));
@@ -45,6 +46,7 @@ public sealed class OrdersController: ControllerBase
     
     [HttpPost("{orderId:guid}/items")]
     [ProducesResponseType(typeof(OrderResponseDTO),StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(OrderResponseDTO),StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
@@ -56,7 +58,6 @@ public sealed class OrdersController: ControllerBase
     
     [HttpDelete("{orderId:guid}/items/{productId:guid}")]
     [ProducesResponseType(typeof(OrderResponseDTO),StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> RemoveItemAsync(Guid orderId, Guid productId, CancellationToken cancellationToken)

@@ -34,6 +34,7 @@ public sealed class ProductController: ControllerBase
     
     [HttpPost]
     [ProducesResponseType(typeof(ProductResponseDTO),StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProductResponseDTO),StatusCodes.Status201Created)]   
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> AddAsync([FromBody] ProductRequestDTO dto, CancellationToken cancellationToken)
@@ -56,6 +57,7 @@ public sealed class ProductController: ControllerBase
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]   
     public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         await _service.DeleteAsync(id, cancellationToken);
