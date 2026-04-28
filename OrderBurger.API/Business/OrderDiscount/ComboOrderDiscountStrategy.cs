@@ -14,13 +14,13 @@ public class ComboOrderDiscountStrategy: IOrderDiscountStrategy
         var existFries = order.Items.Any(i => i.Category == CategoryEnum.Fries);
         
         if (existSandwich && existSoda && existFries)
-            return Math.Round(order.SubTotal * 0.20m, 2, MidpointRounding.AwayFromZero);
+            return Math.Round(order.SubTotal * ComboOrderDiscount.ComboSandwichSodaFries, 2, MidpointRounding.AwayFromZero);
         if (existSandwich && existSoda)
-            return Math.Round(order.SubTotal *  0.15m, 2, MidpointRounding.AwayFromZero);
+            return Math.Round(order.SubTotal *  ComboOrderDiscount.ComboSandwichSoda, 2, MidpointRounding.AwayFromZero);
         if (existSandwich && existFries)
-            return Math.Round(order.SubTotal *  0.10m, 2, MidpointRounding.AwayFromZero);       
+            return Math.Round(order.SubTotal *  ComboOrderDiscount.ComboSandwichFries, 2, MidpointRounding.AwayFromZero);       
         
-        return 0;
+        return ComboOrderDiscount.ComboNone;
     }
     
 }
