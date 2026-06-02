@@ -13,6 +13,7 @@ public sealed class AppDbContext: DbContext
     public DbSet<BusinessPartner> BusinessPartners { get; set; }
     public DbSet<InventoryTransaction> InventoryTransactions { get; set; }
     public DbSet<InventoryTransactionItem> InventoryTransactionItems { get; set; }
+    public DbSet<User> Users { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

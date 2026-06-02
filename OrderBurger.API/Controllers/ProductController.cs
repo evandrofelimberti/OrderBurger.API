@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using OrderBurger.API.DTOs;
@@ -5,6 +6,7 @@ using OrderBurger.API.Services;
 
 namespace OrderBurger.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/v1/[controller]")]
 [Produces("application/json")]
@@ -18,6 +20,7 @@ public sealed class ProductController: ControllerBase
     }
     
     [HttpGet]
+    [AllowAnonymous] // endpoint publico
     [ProducesResponseType(typeof(IAsyncEnumerable<ProductResponseDTO>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken)
     {
@@ -33,6 +36,7 @@ public sealed class ProductController: ControllerBase
     }
     
     [HttpPost]
+    [Authorize(Roles = "Admin,Manager")] // role admin e manager podem criar produtos 
     [ProducesResponseType(typeof(ProductResponseDTO),StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProductResponseDTO),StatusCodes.Status201Created)]   
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

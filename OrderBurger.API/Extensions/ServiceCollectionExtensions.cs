@@ -41,6 +41,7 @@ public static IServiceCollection AddDatabase(
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IBusinessPartnerRepository, BusinessPartnerRepository>();
         services.AddScoped<IInventoryTransactionRepository, InventoryTransactionRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
         
         return services;
     }
@@ -57,7 +58,10 @@ public static IServiceCollection AddDatabase(
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IBusinessPartnerService, BusinessPartnerService>();
-        services.AddScoped<IInventoryTransactionService, InventoryTransactionService>();        
+        services.AddScoped<IInventoryTransactionService, InventoryTransactionService>();
+        services.AddScoped<IUserService, UserService>();
+        //services.AddScoped<ITokenService, TokenService>();
+        
         return services;
     }
 
@@ -93,6 +97,28 @@ public static IServiceCollection AddDatabase(
                 Description = "API RESTful para gerenciamento de pedidos de hamburger — .NET 9"
             });
             options.EnableAnnotations();
+            
+            var securityScheme = new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Description = "Insira o token JWT no formato: Bearer {seu token}",
+                In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT",
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            };
+            
+            options.AddSecurityDefinition("Bearer", securityScheme);
+            options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+            {
+                { securityScheme, Array.Empty<string>() }
+            });
+            
         });
 
         return services;
