@@ -39,6 +39,9 @@ public static IServiceCollection AddDatabase(
     {
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IBusinessPartnerRepository, BusinessPartnerRepository>();
+        services.AddScoped<IInventoryTransactionRepository, InventoryTransactionRepository>();
+        
         return services;
     }
 
@@ -53,6 +56,8 @@ public static IServiceCollection AddDatabase(
     {
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IOrderService, OrderService>();
+        services.AddScoped<IBusinessPartnerService, BusinessPartnerService>();
+        services.AddScoped<IInventoryTransactionService, InventoryTransactionService>();        
         return services;
     }
 
@@ -60,6 +65,8 @@ public static IServiceCollection AddDatabase(
     {
         services.AddAutoMapper(typeof(ProductProfile).Assembly);
         services.AddAutoMapper(typeof(OrderProfile).Assembly);
+        services.AddAutoMapper(typeof(BusinessPartnerProfile).Assembly);
+        services.AddAutoMapper(typeof(InventoryTransactionProfile).Assembly);       
         return services;
     }
 
@@ -69,6 +76,8 @@ public static IServiceCollection AddDatabase(
         services.AddValidatorsFromAssemblyContaining<ProductValidator>();
         services.AddValidatorsFromAssemblyContaining<OrderValidator>();
         services.AddValidatorsFromAssemblyContaining<OrderItemValidator>();
+        services.AddValidatorsFromAssemblyContaining<BusinessPartnerValidator>();
+        services.AddValidatorsFromAssemblyContaining<InventoryTransactionValidator>();
         return services;
     }
 

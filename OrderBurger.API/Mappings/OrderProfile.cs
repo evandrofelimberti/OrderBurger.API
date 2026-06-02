@@ -6,15 +6,7 @@ namespace OrderBurger.API.Mappings;
 
 public sealed class OrderProfile: Profile
 {
-    // public OrderProfile()
-    // {
-    //     CreateMap<OrderItem, OrderItemResponseDTO>()
-    //         .ForCtorParam(nameof(OrderItemResponseDTO.ProductName), opt => opt.MapFrom(_ => string.Empty))
-    //         .ForCtorParam(nameof(OrderItemResponseDTO.ProductCode), opt => opt.MapFrom(_ => string.Empty));
-    //
-    //     CreateMap<Order, OrderResponseDTO>();
-    // }
-    
+   
     public OrderProfile()
     {
         CreateMap<OrderItem, OrderItemResponseDTO>()
