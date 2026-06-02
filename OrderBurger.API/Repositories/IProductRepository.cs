@@ -2,14 +2,8 @@ using OrderBurger.API.Models;
 
 namespace OrderBurger.API.Repositories;
 
-public interface IProductRepository
+public interface IProductRepository : IRepositoryBase<Product>
 {
-    Task<IEnumerable<Product>> GetAllAsync(CancellationToken cancellationToken = default);
-    Task<Product?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
     Task<IEnumerable<Product>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default);
-    IEnumerable<Product> GetByIds(IEnumerable<Guid> ids);    
-    Task AddAsync(Product product, CancellationToken cancellationToken = default);   
-    void Update(Product product);
-    void Delete(Product product);
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+    IEnumerable<Product> GetByIds(IEnumerable<Guid> ids);
 }
